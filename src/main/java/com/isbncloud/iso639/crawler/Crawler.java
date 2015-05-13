@@ -1,6 +1,6 @@
 package com.isbncloud.iso639.crawler;
 
-import com.isbncloud.iso639.api.AlphaObject;
+import com.isbncloud.iso639.api.Alpha4;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -15,7 +15,7 @@ public class Crawler {
 
     private static final Logger logger = LogManager.getLogger(Crawler.class);
 
-    public ArrayList<AlphaObject> parseGeoLangForLetter(char letter) throws IOException {
+    public ArrayList<Alpha4> parseGeoLangForLetter(char letter) throws IOException {
         logger.info("Parsing letter: " + letter);
 
         Document doc = Jsoup.connect("http://www.geolang.com/iso639-6/sortAlpha4.asp")
@@ -26,19 +26,19 @@ public class Crawler {
         Elements resultAlphaParentIds = doc.select("table[width=750][cellspacing=1] tbody tr td:nth-child(2)");
         Elements resultReferenceNames = doc.select("table[width=750][cellspacing=1] tbody tr td:nth-child(3)");
 
-        ArrayList<AlphaObject> languages = new ArrayList<>();
+        ArrayList<Alpha4> languages = new ArrayList<>();
 
-        int Count = 0;
+        int count = 0;
         for (Element resultAlphaId : resultAlphaIds) {
-            if (0 < Count++) {
-                Element resultAlphaParentId = resultAlphaParentIds.get(Count - 1);
-                Element resultReferenceName = resultReferenceNames.get(Count - 1);
+            if (count++ > 0) {
+                Element resultAlphaParentId = resultAlphaParentIds.get(count - 1);
+                Element resultReferenceName = resultReferenceNames.get(count - 1);
 
                 String alphaId = resultAlphaId.text();
                 String alphaParentId = resultAlphaParentId.text();
                 String referenceName = resultReferenceName.text();
 
-                languages.add(new AlphaObject(alphaId, alphaParentId, referenceName));
+                languages.add(new Alpha4(alphaId, alphaParentId, referenceName));
             }
         }
 

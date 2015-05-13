@@ -1,7 +1,7 @@
 package com.isbncloud.iso639.crawler;
 
-import com.isbncloud.iso639.api.AlphaObject;
-import com.isbncloud.iso639.api.ConfigurationLoader;
+import com.isbncloud.iso639.api.Alpha4;
+import com.isbncloud.iso639.api.Alpha4Database;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
@@ -22,37 +22,33 @@ public class Main {
         logger.info("Started crawler!");
 
         Main main = new Main();
-        main.DownloadElementsIntoAnXML();
+        ArrayList<Alpha4> allLanguages = main.downloadElements();
+
+        main.saveAsXml(allLanguages);
     }
 
-    public void DownloadElementsIntoAnXML() throws IOException {
+    public ArrayList<Alpha4> downloadElements() throws IOException {
         char[] alphabet = this.getCharactersInAlphabet();
 
-        ArrayList<AlphaObject> allLanguages = new ArrayList<>();
+        ArrayList<Alpha4> allLanguages = new ArrayList<>();
 
         Crawler crawler = new Crawler();
         for (char letter : alphabet) {
             allLanguages.addAll(crawler.parseGeoLangForLetter(letter));
         }
 
-        saveAsXml(allLanguages);
+        return allLanguages;
     }
 
-    private void saveAsXml(ArrayList<AlphaObject> allLanguages) throws IOException {
+    private void saveAsXml(ArrayList<Alpha4> allLanguages) throws IOException {
         logger.info("Started saving!");
 
         XStream xstream = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("_-", "_")));
-        xstream.processAnnotations(AlphaObject.class);
+        xstream.processAnnotations(Alpha4.class);
 
-        String xml = "";
+        String xml = xstream.toXML(allLanguages);
 
-        for (AlphaObject all_language : allLanguages) {
-            xml = xml + "\n" + xstream.toXML(all_language);
-        }
-
-        File file = new File(ConfigurationLoader.LANGUAGE_XML_LOCATION);
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Alpha4Database.LANGUAGE_XML_LOCATION)));
         bw.write(xml);
         bw.close();
     }
