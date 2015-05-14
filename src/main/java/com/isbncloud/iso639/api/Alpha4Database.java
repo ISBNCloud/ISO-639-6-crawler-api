@@ -4,10 +4,9 @@ import com.thoughtworks.xstream.XStream;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.commons.io.IOUtils;
 
 public class Alpha4Database {
 
@@ -15,7 +14,7 @@ public class Alpha4Database {
     private HashMap<String, Alpha4> alpha4IdCache = new HashMap<>();
 
     public Alpha4Database() throws IOException, URISyntaxException {
-        String xml = String.join("\n", Files.readAllLines(Paths.get(Alpha4Database.class.getClassLoader().getResource("language_list.xml").toURI())));
+        String xml = IOUtils.toString(Alpha4Database.class.getClassLoader().getResourceAsStream("language_list.xml"));
 
         XStream xstream = new XStream();
         xstream.processAnnotations(Alpha4.class);
