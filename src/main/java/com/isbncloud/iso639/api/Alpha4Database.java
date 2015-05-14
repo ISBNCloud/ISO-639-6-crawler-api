@@ -3,6 +3,7 @@ package com.isbncloud.iso639.api;
 import com.thoughtworks.xstream.XStream;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,15 +11,14 @@ import java.util.HashMap;
 
 public class Alpha4Database {
 
-    public static final String LANGUAGE_XML_LOCATION = System.getProperty("user.dir") + "/conf/language_list.xml";
-
     private HashMap<String, Alpha4> referenceNameCache = new HashMap<>();
     private HashMap<String, Alpha4> alpha4IdCache = new HashMap<>();
 
-    private Alpha4Database() throws IOException {
-        String xml = String.join("\n", Files.readAllLines(Paths.get(LANGUAGE_XML_LOCATION)));
+    public Alpha4Database() throws IOException, URISyntaxException {
+        String xml = String.join("\n", Files.readAllLines(Paths.get(Alpha4Database.class.getClassLoader().getResource("language_list.xml").toURI())));
 
         XStream xstream = new XStream();
+        xstream.processAnnotations(Alpha4.class);
 
         ArrayList<Alpha4> allAlpha4 = (ArrayList<Alpha4>) xstream.fromXML(xml);
 

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 public class Main {
 
+    public static final String LANGUAGE_XML_LOCATION = System.getProperty("user.dir") + "/conf/language_list.xml";
+
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
@@ -48,7 +50,7 @@ public class Main {
 
         String xml = xstream.toXML(allLanguages);
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Alpha4Database.LANGUAGE_XML_LOCATION)));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(LANGUAGE_XML_LOCATION)));
         bw.write(xml);
         bw.close();
     }
