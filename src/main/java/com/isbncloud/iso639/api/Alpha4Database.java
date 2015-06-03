@@ -36,11 +36,8 @@ public class Alpha4Database {
     }
 
     public boolean isValidAlpha4ReferenceName(String referenceName) {
-        if (referenceName == null) {
-            return false;
-        }
+        return referenceName != null && referenceNameCache.containsKey(referenceName.toLowerCase());
 
-        return referenceNameCache.containsKey(referenceName.toLowerCase());
     }
 
     public Alpha4 getAlpha4ByAlpha4Id(String alpha4Id) {
@@ -52,10 +49,7 @@ public class Alpha4Database {
     }
 
     public boolean isValidAlpha4Id(String alpha4Id) {
-        if (alpha4Id == null) {
-            return false;
-        }
+        return alpha4Id != null && alpha4IdCache.containsKey(alpha4Id.toLowerCase());
 
-        return alpha4IdCache.containsKey(alpha4Id.toLowerCase());
     }
 }
